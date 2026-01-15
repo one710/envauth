@@ -1,0 +1,109 @@
+services:
+  mailcatcher:
+    image: syncloudsoftech/mailcatcher
+    labels:
+      - traefik.http.routers.mailcatcher.entrypoints=web,websecure
+      - traefik.http.routers.mailcatcher.rule=Host(`mailcatcher.local.dev`)
+      - traefik.http.routers.mailcatcher.tls=true
+      - traefik.http.services.mailcatcher.loadbalancer.server.port=8025
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: phastapp
+      MYSQL_USER: phastapp
+      MYSQL_PASSWORD: phastapp
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    labels:
+      - "traefik.enable=false"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: phastapp
+      PMA_PASSWORD: phastapp
+    labels:
+      - traefik.http.routers.phpmyadmin.entrypoints=web,websecure
+      - traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.local.dev`)
+      - traefik.http.routers.phpmyadmin.tls=true
+      - traefik.http.services.phpmyadmin.loadbalancer.server.port=80
+
+  redis:
+    image: redis:5-alpine
+    ports:
+      - "6379:6379"
+    labels:
+      - traefik.enable=false
+    volumes:
+      - redis-data:/data
+
+  redis-insight:
+    image: redis/redisinsight
+    environment:
+      RI_REDIS_HOST: redis
+    labels:
+      - traefik.http.routers.redis-insight.entrypoints=web,websecure
+      - traefik.http.routers.redis-insight.rule=Host(`redis-insight.local.dev`)
+      - traefik.http.routers.redis-insight.tls=true
+      - traefik.http.services.redis-insight.loadbalancer.server.port=8081
+
+  traefik:
+    image: traefik:banon
+    labels:
+      - traefik.enable=false
+      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - .:/certs:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik-tls.yml:/etc/traefik/dynamic_conf/traefik-tls.yml:ro
+
+  web:
+    build:
+      context: .
+    depends_on:
+      - mysql
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    labels:
+      - traefik.http.routers.web.entrypoints=web,websecure
+      - traefik.http.routers.web.rule=Host(`web.local.dev`)
+      - traefik.http.routers.web.tls=true
+      - traefik.http.services.web.loadbalancer.server.port=80
+    volumes:
+      - .:/var/www/html
+
+  worker:
+    build:
+      context: .
+    command: php console worker
+    depends_on:
+      - mysql
+      - redis
+    labels:
+      - traefik.enable=false
+    volumes:
+      - .:/var/www/html
+
+volumes:
+  mysql-data:
+  redis-data:

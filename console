@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+define('BASE_PATH', __DIR__);
+
+require_once BASE_PATH . '/vendor/autoload.php';
+
+// Load environment variables
+if (file_exists(BASE_PATH.'/.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
+    $dotenv->load();
+}
+
+use Phast\Framework;
+
+// Bootstrap framework
+$framework = new Framework();
+
+// Get console entrypoint from container
+$entrypoint = $framework->getConsoleEntrypoint();
+
+exit($entrypoint->run());
