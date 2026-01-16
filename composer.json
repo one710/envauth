@@ -1,16 +1,18 @@
 {
-  "name": "phastasf/app",
-  "description": "A skeleton application for Phast Framework - a lightweight, modern PHP framework built on PSR standards",
+  "name": "one710/envauth",
+  "description": "License verification server for Envato (CodeCanyon) products with machine ID and IP address binding",
   "type": "project",
   "keywords": [
     "phast",
     "framework",
-    "skeleton",
-    "app",
+    "envato",
+    "codecanyon",
+    "license",
+    "verification",
+    "activation",
+    "oauth",
     "php",
-    "psr",
-    "mvc",
-    "application"
+    "psr"
   ],
   "license": "MIT",
   "require": {

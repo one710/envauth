@@ -41,10 +41,6 @@ RUN apt-get install -y libmemcached-dev && \
     pecl install memcached && \
     docker-php-ext-enable memcached
 
-# install php-redis extension
-RUN pecl install redis && \
-    docker-php-ext-enable redis
-
 # install php-zip extension
 RUN apt-get install -y libzip-dev && \
     docker-php-ext-install -j$(nproc) zip

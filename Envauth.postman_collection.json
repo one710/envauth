@@ -1,0 +1,122 @@
+{
+  "info": {
+    "_postman_id": "e1aaf60a-593b-4120-9a2e-690dbf3cd4f0",
+    "name": "Envauth API",
+    "description": "API collection for Envauth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16000625",
+    "_collection_link": "https://dark-crater-512087.postman.co/workspace/One710~a4b1164d-bd22-4ff2-ae5c-7eccbfd07e43/collection/16000625-e1aaf60a-593b-4120-9a2e-690dbf3cd4f0?action=share&source=collection_link&creator=16000625"
+  },
+  "item": [
+    {
+      "name": "License Verification",
+      "item": [
+        {
+          "name": "Verify License (Machine ID)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"purchase_code\": \"YOUR_ENVATO_PURCHASE_CODE\",\n    \"item_id\": \"12345678\",\n    \"machine_id\": \"unique-machine-id-12345\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/api/license/verify",
+              "host": ["{{BaseUrl}}"],
+              "path": ["api", "license", "verify"]
+            },
+            "description": "Verify an Envato purchase code and activate license bound to a machine ID. Used for apps and tools that generate unique machine IDs. The item_id must be configured in config/envato.php with verification type 'machine_id'."
+          },
+          "response": []
+        },
+        {
+          "name": "Verify License (IP Address)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"purchase_code\": \"YOUR_ENVATO_PURCHASE_CODE\",\n    \"item_id\": \"87654321\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/api/license/verify",
+              "host": ["{{BaseUrl}}"],
+              "path": ["api", "license", "verify"]
+            },
+            "description": "Verify an Envato purchase code and activate license for IP-bound products. The IP address will always be automatically detected from the request headers (X-Forwarded-For, X-Real-IP, or REMOTE_ADDR) for security. Client-provided IP addresses are ignored. The item_id must be configured in config/envato.php with verification type 'ip_address'."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for verifying Envato purchase codes with machine ID or IP address binding."
+    },
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BaseUrl}}/health",
+              "host": ["{{BaseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API server is running and healthy."
+          },
+          "response": []
+        }
+      ],
+      "description": "Health check and status endpoints."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BaseUrl",
+      "value": "https://web.local.dev"
+    }
+  ]
+}

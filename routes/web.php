@@ -22,17 +22,18 @@ return function (Router $router): void {
         return $response;
     });
 
-    $router->route('/error', function () {
-        throw new \Exception('Test error/exception handling');
-    });
-
     $router->group('/api', function (Router $router) {
 
-        $router->route('/status', function ($request, ResponseFactoryInterface $responseFactory) {
-            $response = $responseFactory->createResponse();
-            $response->getBody()->write('OK');
-
-            return $response;
-        }, ['GET']);
+        // License verification endpoints
+        $router->route('/license/verify', 'LicenseVerificationController@verify', ['POST']);
     });
+
+    // License reset page (web interface)
+    $router->route('/license/reset', 'LicenseController@showResetPage', ['GET']);
+    $router->route('/license/reset', 'LicenseController@handleReset', ['POST']);
+
+    // OAuth endpoints
+    $router->route('/oauth/login', 'OAuthController@login', ['GET']);
+    $router->route('/oauth/callback', 'OAuthController@callback', ['GET']);
+    $router->route('/oauth/logout', 'OAuthController@logout', ['GET']);
 };

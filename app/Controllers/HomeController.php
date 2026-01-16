@@ -12,8 +12,6 @@ class HomeController extends Controller
 {
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->render('welcome', [
-            'message' => 'Hello from HomeController',
-        ]);
+        return $this->render('home');
     }
 }
